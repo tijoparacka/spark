@@ -1776,6 +1776,9 @@ the Data Sources API.  The following options are supported:
 val jdbcDF = sqlContext.load("jdbc", Map(
   "url" -> "jdbc:postgresql:dbserver",
   "dbtable" -> "schema.tablename"))
+sqlContext.read.format("jdbc").options(Map(
+  "url" -> "jdbc:postgresql:dbserver",
+  "dbtable" -> "schema.tablename")).load()
 {% endhighlight %}
 
 </div>
