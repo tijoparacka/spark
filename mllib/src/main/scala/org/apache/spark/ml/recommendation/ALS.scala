@@ -185,15 +185,36 @@ class ALSModel private[ml] (
     @transient val itemFactors: DataFrame)
   extends Model[ALSModel] with ALSModelParams {
 
-  /** @group setParam */
+  /**
+   * This set the User Column in Model .
+   * @group setParam
+   * @param value  User Column
+   * @since 1.3.0
+   */
   def setUserCol(value: String): this.type = set(userCol, value)
 
-  /** @group setParam */
+  /**
+   * This set the Item Column in Model.
+   * @group setParam
+   * @param value  Item Column
+   * @since 1.3.0
+   */
   def setItemCol(value: String): this.type = set(itemCol, value)
 
-  /** @group setParam */
+  /**
+   * This set the Prediction Column in Model .
+   * @group setParam
+   * @param value  Prediction Column
+   * @since 1.3.0
+   */
   def setPredictionCol(value: String): this.type = set(predictionCol, value)
 
+  /**
+   * Transforms the input dataset.
+   * @param dataset input dataset
+   * @return transformed dataset
+   * @since 1.3.0
+   */
   override def transform(dataset: DataFrame): DataFrame = {
     // Register a UDF for DataFrame, and then
     // create a new column named map(predictionCol) by running the predict UDF.
@@ -211,12 +232,24 @@ class ALSModel private[ml] (
         predict(userFactors("features"), itemFactors("features")).as($(predictionCol)))
   }
 
+  /**
+   * Transforms the schema.
+   * @param schema input schema
+   * @return transformed schema
+   * @since 1.3.0
+   */
   override def transformSchema(schema: StructType): StructType = {
     SchemaUtils.checkColumnType(schema, $(userCol), IntegerType)
     SchemaUtils.checkColumnType(schema, $(itemCol), IntegerType)
     SchemaUtils.appendColumn(schema, $(predictionCol), FloatType)
   }
 
+  /**
+   * Copy  with extra params.
+   * @param schema input schema
+   * @return transformed schema
+   * @since 1.3.0
+   */
   override def copy(extra: ParamMap): ALSModel = {
     val copied = new ALSModel(uid, rank, userFactors, itemFactors)
     copyValues(copied, extra).setParent(parent)
@@ -261,58 +294,136 @@ class ALS(override val uid: String) extends Estimator[ALSModel] with ALSParams {
 
   def this() = this(Identifiable.randomUID("als"))
 
-  /** @group setParam */
+  /**
+   * Set the value of the Rank of factorization
+   *@group setParam
+   *@param value value for rank of factorization
+   *@since 1.3.0
+   */
   def setRank(value: Int): this.type = set(rank, value)
 
-  /** @group setParam */
+  /**
+   * Set the number of user block
+   *@group setParam
+   *@param value no of block
+   *@since 1.3.0
+   */
   def setNumUserBlocks(value: Int): this.type = set(numUserBlocks, value)
 
-  /** @group setParam */
+  /**
+   * Set the number of Item Blocks
+   *@group setParam
+   *@param value no of Item
+   *@since 1.3.0
+   */
   def setNumItemBlocks(value: Int): this.type = set(numItemBlocks, value)
 
-  /** @group setParam */
+  /**
+   * Set the flag whether to use Implicit Preference
+   *@group setParam
+   *@param value flag value
+   *@since 1.3.0
+   */
   def setImplicitPrefs(value: Boolean): this.type = set(implicitPrefs, value)
 
-  /** @group setParam */
+  /**
+   * Set alpha for Implicit preference
+   *@group setParam
+   *@param value
+   *@since 1.3.0
+   */
   def setAlpha(value: Double): this.type = set(alpha, value)
 
-  /** @group setParam */
+  /**
+   * Set column name of userids
+   *@group setParam
+   *@param value Column Name
+   *@since 1.3.0
+   */
   def setUserCol(value: String): this.type = set(userCol, value)
 
-  /** @group setParam */
+  /**
+   * Set Column name for item ids
+   *@group setParam
+   *@param value column name
+   *@since 1.3.0
+   */
   def setItemCol(value: String): this.type = set(itemCol, value)
 
-  /** @group setParam */
+  /**
+   * Set Column name for ratings
+   *@group setParam
+   *@param value column name
+   *@since 1.3.0
+   */
   def setRatingCol(value: String): this.type = set(ratingCol, value)
 
-  /** @group setParam */
+  /**
+   * Set prediction Column Name
+   *@group setParam
+   *@param value column Name
+   *@since 1.3.0
+   */
   def setPredictionCol(value: String): this.type = set(predictionCol, value)
 
-  /** @group setParam */
+  /**
+   * Set Max number of iterations
+   *@group setParam
+   *@param value max no
+   *@since 1.3.0
+   */
   def setMaxIter(value: Int): this.type = set(maxIter, value)
 
-  /** @group setParam */
+  /**
+   *  Set regularization parameter
+   *@group setParam
+   *@param value
+   *@since 1.3.0
+   */
   def setRegParam(value: Double): this.type = set(regParam, value)
 
-  /** @group setParam */
+  /**
+   * Flag value to mark only non negative
+   *@group setParam
+   *@param value flag value
+   *@since 1.3.0
+   */
   def setNonnegative(value: Boolean): this.type = set(nonnegative, value)
 
-  /** @group setParam */
+  /**
+   * Param for checkpoint interval (>= 1)
+   *@group setParam
+   *@param value set non negative value
+   *@since 1.4.0
+   */
   def setCheckpointInterval(value: Int): this.type = set(checkpointInterval, value)
 
-  /** @group setParam */
+  /**
+   * Set random seed  value
+   *@group setParam
+   *@param value
+   *@since 1.4.0
+   */
   def setSeed(value: Long): this.type = set(seed, value)
 
   /**
    * Sets both numUserBlocks and numItemBlocks to the specific value.
-   * @group setParam
+   *@group setParam
+   *@param value number of blocks
+   *@since 1.3.0
    */
   def setNumBlocks(value: Int): this.type = {
     setNumUserBlocks(value)
     setNumItemBlocks(value)
     this
   }
-
+  /**
+   * Fits a model to the input data.
+   *@group setParam
+   *@param dataset input dataset
+   *@return model
+   *@since 1.3.0
+   */
   override def fit(dataset: DataFrame): ALSModel = {
     import dataset.sqlContext.implicits._
     val ratings = dataset
@@ -332,10 +443,22 @@ class ALS(override val uid: String) extends Estimator[ALSModel] with ALSParams {
     copyValues(model)
   }
 
+  /**
+   * Derives the output schema from the input schema.
+   *@param dataset input dataset
+   *@return schema
+   *@since 1.3.0
+   */
   override def transformSchema(schema: StructType): StructType = {
     validateAndTransformSchema(schema)
   }
 
+  /**
+   * copy estimator with extra params.
+   *@param dataset input dataset
+   *@return schema
+   *@since 1.3.0
+   */
   override def copy(extra: ParamMap): ALS = defaultCopy(extra)
 }
 
@@ -517,7 +640,10 @@ object ALS extends Logging {
   /**
    * :: DeveloperApi ::
    * Implementation of the ALS algorithm.
+   *@return schema
+   *@since 1.3.0
    */
+
   @DeveloperApi
   def train[ID: ClassTag]( // scalastyle:ignore
       ratings: RDD[Rating[ID]],
